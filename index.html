@@ -417,7 +417,7 @@
         // ── 圖片資源 ──
         // SVG 存在 GitHub Pages，透過 wsrv.nl 即時轉 PNG 給 Gmail 用
         const GH_ASSETS = 'https://ethorxmomo777.github.io/ethorx-email-signature/assets';
-        const proxy = (svgUrl, w, h) => `https://wsrv.nl/?url=${encodeURIComponent(svgUrl)}&output=png&w=${w}&h=${h}`;
+        const proxy = (svgUrl, w, h) => `https://wsrv.nl/?url=${encodeURIComponent(svgUrl)}&output=png&w=${w}&h=${h}&v=2`;
 
         const LOGO_BLACK_URL = proxy(`${GH_ASSETS}/logo-black.svg`, 280, 50);
         const FB_ICON = proxy(`${GH_ASSETS}/icon-fb.svg`, 56, 56);
