@@ -414,12 +414,15 @@
     <div class="toast" id="toast">✅ 已複製到剪貼簿！</div>
 
     <script>
-        // ── 圖片資源 (用 GitHub Pages HTTPS URL，確保 Gmail 相容) ──
-        const ASSETS_BASE = 'https://ethorxmomo777.github.io/ethorx-email-signature/assets';
-        const LOGO_BLACK_URL = `${ASSETS_BASE}/logo-black.png`;
-        const FB_ICON = `${ASSETS_BASE}/icon-fb.png`;
-        const IG_ICON = `${ASSETS_BASE}/icon-ig.png`;
-        const LI_ICON = `${ASSETS_BASE}/icon-li.png`;
+        // ── 圖片資源 ──
+        // SVG 存在 GitHub Pages，透過 wsrv.nl 即時轉 PNG 給 Gmail 用
+        const GH_ASSETS = 'https://ethorxmomo777.github.io/ethorx-email-signature/assets';
+        const proxy = (svgUrl, w, h) => `https://wsrv.nl/?url=${encodeURIComponent(svgUrl)}&output=png&w=${w}&h=${h}`;
+
+        const LOGO_BLACK_URL = proxy(`${GH_ASSETS}/logo-black.svg`, 280, 50);
+        const FB_ICON = proxy(`${GH_ASSETS}/icon-fb.svg`, 56, 56);
+        const IG_ICON = proxy(`${GH_ASSETS}/icon-ig.svg`, 56, 56);
+        const LI_ICON = proxy(`${GH_ASSETS}/icon-li.svg`, 56, 56);
 
 
         /**
