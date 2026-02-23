@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EthorX Email Signature Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        /* ── Header ── */
+        .header {
+            background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+            border-bottom: 1px solid #222;
+            padding: 24px 40px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header svg {
+            width: 120px;
+            height: auto;
+        }
+
+        .header-divider {
+            width: 1px;
+            height: 24px;
+            background: #333;
+        }
+
+        .header-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #888;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── Main Layout ── */
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 48px 40px;
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 48px;
+        }
+
+        /* ── Form Panel ── */
+        .form-panel {
+            background: #141414;
+            border: 1px solid #222;
+            border-radius: 16px;
+            padding: 32px;
+        }
+
+        .form-panel h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .form-panel .subtitle {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 28px;
+        }
+
+        .field-group {
+            margin-bottom: 20px;
+        }
+
+        .field-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+        }
+
+        .field-group input,
+        .field-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background: #0d0d0d;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            color: #e0e0e0;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .field-group input:focus,
+        .field-group select:focus {
+            outline: none;
+            border-color: #CEFF71;
+            box-shadow: 0 0 0 3px rgba(206, 255, 113, 0.1);
+        }
+
+        .field-group input::placeholder {
+            color: #444;
+        }
+
+        .field-group select {
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23666' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+        }
+
+        /* ── Buttons ── */
+        .btn-copy {
+            width: 100%;
+            padding: 14px 24px;
+            background: #CEFF71;
+            color: #0a0a0a;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+
+        .btn-copy:hover {
+            background: #d4ff88;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(206, 255, 113, 0.25);
+        }
+
+        .btn-copy:active {
+            transform: translateY(0);
+        }
+
+        .btn-copy.copied {
+            background: #22c55e;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 12px 24px;
+            background: transparent;
+            color: #888;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            border-color: #444;
+            color: #ccc;
+        }
+
+        /* ── Preview Panel ── */
+        .preview-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .preview-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        .preview-container {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 40px;
+            flex: 1;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .signature-wrapper {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        /* ── Social Link Config ── */
+        .social-config {
+            margin-top: 4px;
+            padding-top: 20px;
+            border-top: 1px solid #1e1e1e;
+        }
+
+        .social-config h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #888;
+            margin-bottom: 14px;
+        }
+
+        .social-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .social-icon-label {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .social-icon-label svg {
+            width: 16px;
+            height: 16px;
+            fill: #666;
+        }
+
+        .social-field input {
+            flex: 1;
+            padding: 10px 14px;
+            background: #0d0d0d;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s;
+        }
+
+        .social-field input:focus {
+            outline: none;
+            border-color: #CEFF71;
+        }
+
+        .social-field input::placeholder {
+            color: #444;
+        }
+
+        /* ── Toast ── */
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #22c55e;
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            .main {
+                grid-template-columns: 1fr;
+                padding: 24px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <svg width="120" height="22" viewBox="0 0 206 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M95.9503 12.7347H82.8833H79.1114L82.3804 3.60129H69.3135L66.0445 12.7347L64.7512 16.336L58.9048 32.6629H71.9807L77.8272 16.336H81.5901L75.7437 32.6629H88.8196L94.6571 16.336H94.6661L95.9503 12.7347Z"
+                fill="#FFFFFF" />
+            <path
+                d="M152.125 16.336H154.936H155.313L156.597 12.7347H156.229H153.418H147.024H133.957L132.663 16.336L126.817 32.6629H139.893L145.739 16.336H152.125Z"
+                fill="#FFFFFF" />
+            <path
+                d="M18.9134 7.20256L15.6444 16.336H27.2745L25.9902 19.9372H14.3512L13.067 23.5385L11.0822 29.0617H26.5919L25.2987 32.6629H3.26899L1.97576 29.0617L0 23.5385V23.5295L1.28424 19.9283L2.57747 16.336L5.84646 7.20256L7.1307 3.60129H31.8277L30.5435 7.20256H18.9134Z"
+                fill="#FFFFFF" />
+            <path
+                d="M124.895 16.336L123.602 12.7347H99.8119L98.5186 16.336L97.2254 19.9372L95.9412 23.5385L95.995 23.6912L97.9259 29.0706L99.2101 32.6719H122.892L124.177 29.0706L126.808 21.7154L124.886 16.336H124.895ZM114.388 19.9283L111.119 29.0617H107.032L109.017 23.5295L110.301 19.9283L111.595 16.327H115.681L114.388 19.9283Z"
+                fill="#FFFFFF" />
+            <path
+                d="M43.422 29.0617H39.6501L41.6348 23.5385L42.9191 19.9372L44.2123 16.336H61.0602L62.3534 12.7347H45.4966L47.4813 7.20256L48.7655 3.60129H35.6986L34.4053 7.20256L31.1453 16.336L29.8521 19.9372L28.5679 23.5295V23.5385L31.8369 32.6629H35.6177H38.3659H42.1378H44.1315H55.2047L58.4737 23.5385H45.4067L43.422 29.0617Z"
+                fill="#FFFFFF" />
+            <path
+                d="M173.921 14.2075L169.395 19.0661L156.705 32.6719H147.643L164.859 14.2075L154.972 3.60129H164.033L169.395 9.35794L173.921 14.2075Z"
+                fill="#FFFFFF" />
+            <path
+                d="M206 0L184.823 22.7033L197.477 36.2642H181.429L176.795 31.2979L168.757 22.7033L176.795 14.0997L189.942 0H206Z"
+                fill="#FFFFFF" />
+        </svg>
+        <div class="header-divider"></div>
+        <span class="header-title">Email Signature Generator</span>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+
+        <!-- Form Panel -->
+        <div class="form-panel">
+            <h2>建立你的簽名檔</h2>
+            <p class="subtitle">填入個人資訊，即時預覽並複製到 Gmail</p>
+
+            <div class="field-group">
+                <label>姓名 Name</label>
+                <input type="text" id="inputName" placeholder="例：王大明" oninput="updatePreview()">
+            </div>
+
+            <div class="field-group">
+                <label>職位 Title</label>
+                <input type="text" id="inputTitle" placeholder="例：Software Engineer" oninput="updatePreview()">
+            </div>
+
+            <div class="field-group">
+                <label>手機 Mobile</label>
+                <input type="text" id="inputMobile" placeholder="例：+886 912-345-678" oninput="updatePreview()">
+            </div>
+
+            <div class="field-group">
+                <label>Email</label>
+                <input type="email" id="inputEmail" placeholder="例：name@ethorx.com" oninput="updatePreview()">
+            </div>
+
+            <!-- Social Links -->
+            <div class="social-config">
+                <h3>社群連結 Social Links</h3>
+                <div class="social-field">
+                    <div class="social-icon-label">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                        </svg>
+                    </div>
+                    <input type="text" id="inputFacebook" value="https://www.facebook.com/ethorx"
+                        oninput="updatePreview()">
+                </div>
+                <div class="social-field">
+                    <div class="social-icon-label">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                        </svg>
+                    </div>
+                    <input type="text" id="inputInstagram" value="https://www.instagram.com/ethorx.ai/"
+                        oninput="updatePreview()">
+                </div>
+                <div class="social-field">
+                    <div class="social-icon-label">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                        </svg>
+                    </div>
+                    <input type="text" id="inputLinkedin" value="https://www.linkedin.com/company/ethorx/"
+                        oninput="updatePreview()">
+                </div>
+            </div>
+
+            <button class="btn-copy" id="btnCopy" onclick="copySignature()">
+                📋 複製簽名檔 HTML
+            </button>
+            <button class="btn-secondary" onclick="copyRichText()">
+                📝 複製為富文字（直接貼上 Gmail）
+            </button>
+        </div>
+
+        <!-- Preview Panel -->
+        <div class="preview-panel">
+            <span class="preview-label">即時預覽 Live Preview</span>
+            <div class="preview-container">
+                <div class="signature-wrapper" id="signaturePreview">
+                    <!-- 簽名檔會被動態注入 -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">✅ 已複製到剪貼簿！</div>
+
+    <script>
+        // ── EthorX Logo (Black, SVG inline for Gmail compatibility) ──
+        const ETHORX_LOGO_BLACK_SVG = `<svg width="140" height="25" viewBox="0 0 206 37" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M95.9503 12.7347H82.8833H79.1114L82.3804 3.60129H69.3135L66.0445 12.7347L64.7512 16.336L58.9048 32.6629H71.9807L77.8272 16.336H81.5901L75.7437 32.6629H88.8196L94.6571 16.336H94.6661L95.9503 12.7347Z" fill="black"/><path d="M152.125 16.336H154.936H155.313L156.597 12.7347H156.229H153.418H147.024H133.957L132.663 16.336L126.817 32.6629H139.893L145.739 16.336H152.125Z" fill="black"/><path d="M18.9134 7.20256L15.6444 16.336H27.2745L25.9902 19.9372H14.3512L13.067 23.5385L11.0822 29.0617H26.5919L25.2987 32.6629H3.26899L1.97576 29.0617L0 23.5385V23.5295L1.28424 19.9283L2.57747 16.336L5.84646 7.20256L7.1307 3.60129H31.8277L30.5435 7.20256H18.9134Z" fill="black"/><path d="M124.895 16.336L123.602 12.7347H99.8119L98.5186 16.336L97.2254 19.9372L95.9412 23.5385L95.995 23.6912L97.9259 29.0706L99.2101 32.6719H122.892L124.177 29.0706L126.808 21.7154L124.886 16.336H124.895ZM114.388 19.9283L111.119 29.0617H107.032L109.017 23.5295L110.301 19.9283L111.595 16.327H115.681L114.388 19.9283Z" fill="black"/><path d="M43.422 29.0617H39.6501L41.6348 23.5385L42.9191 19.9372L44.2123 16.336H61.0602L62.3534 12.7347H45.4966L47.4813 7.20256L48.7655 3.60129H35.6986L34.4053 7.20256L31.1453 16.336L29.8521 19.9372L28.5679 23.5295V23.5385L31.8369 32.6629H35.6177H38.3659H42.1378H44.1315H55.2047L58.4737 23.5385H45.4067L43.422 29.0617Z" fill="black"/><path d="M173.921 14.2075L169.395 19.0661L156.705 32.6719H147.643L164.859 14.2075L154.972 3.60129H164.033L169.395 9.35794L173.921 14.2075Z" fill="black"/><path d="M206 0L184.823 22.7033L197.477 36.2642H181.429L176.795 31.2979L168.757 22.7033L176.795 14.0997L189.942 0H206Z" fill="black"/></svg>`;
+
+        // ── EthorX Logo (White, for dark banner) ──
+        const ETHORX_LOGO_WHITE_SVG_INLINE = `<svg width="80" height="14" viewBox="0 0 206 37" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M95.9503 12.7347H82.8833H79.1114L82.3804 3.60129H69.3135L66.0445 12.7347L64.7512 16.336L58.9048 32.6629H71.9807L77.8272 16.336H81.5901L75.7437 32.6629H88.8196L94.6571 16.336H94.6661L95.9503 12.7347Z" fill="white"/><path d="M152.125 16.336H154.936H155.313L156.597 12.7347H156.229H153.418H147.024H133.957L132.663 16.336L126.817 32.6629H139.893L145.739 16.336H152.125Z" fill="white"/><path d="M18.9134 7.20256L15.6444 16.336H27.2745L25.9902 19.9372H14.3512L13.067 23.5385L11.0822 29.0617H26.5919L25.2987 32.6629H3.26899L1.97576 29.0617L0 23.5385V23.5295L1.28424 19.9283L2.57747 16.336L5.84646 7.20256L7.1307 3.60129H31.8277L30.5435 7.20256H18.9134Z" fill="white"/><path d="M124.895 16.336L123.602 12.7347H99.8119L98.5186 16.336L97.2254 19.9372L95.9412 23.5385L95.995 23.6912L97.9259 29.0706L99.2101 32.6719H122.892L124.177 29.0706L126.808 21.7154L124.886 16.336H124.895ZM114.388 19.9283L111.119 29.0617H107.032L109.017 23.5295L110.301 19.9283L111.595 16.327H115.681L114.388 19.9283Z" fill="white"/><path d="M43.422 29.0617H39.6501L41.6348 23.5385L42.9191 19.9372L44.2123 16.336H61.0602L62.3534 12.7347H45.4966L47.4813 7.20256L48.7655 3.60129H35.6986L34.4053 7.20256L31.1453 16.336L29.8521 19.9372L28.5679 23.5295V23.5385L31.8369 32.6629H35.6177H38.3659H42.1378H44.1315H55.2047L58.4737 23.5385H45.4067L43.422 29.0617Z" fill="white"/><path d="M173.921 14.2075L169.395 19.0661L156.705 32.6719H147.643L164.859 14.2075L154.972 3.60129H164.033L169.395 9.35794L173.921 14.2075Z" fill="white"/><path d="M206 0L184.823 22.7033L197.477 36.2642H181.429L176.795 31.2979L168.757 22.7033L176.795 14.0997L189.942 0H206Z" fill="white"/></svg>`;
+
+        // ── Base64 encoded EthorX Logo (for Gmail img tag compatibility) ──
+        // Gmail 不支援 inline SVG，必須用 img + base64
+        const LOGO_BLACK_BASE64 = 'data:image/svg+xml;base64,' + btoa(`<svg width="140" height="25" viewBox="0 0 206 37" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M95.9503 12.7347H82.8833H79.1114L82.3804 3.60129H69.3135L66.0445 12.7347L64.7512 16.336L58.9048 32.6629H71.9807L77.8272 16.336H81.5901L75.7437 32.6629H88.8196L94.6571 16.336H94.6661L95.9503 12.7347Z" fill="black"/><path d="M152.125 16.336H154.936H155.313L156.597 12.7347H156.229H153.418H147.024H133.957L132.663 16.336L126.817 32.6629H139.893L145.739 16.336H152.125Z" fill="black"/><path d="M18.9134 7.20256L15.6444 16.336H27.2745L25.9902 19.9372H14.3512L13.067 23.5385L11.0822 29.0617H26.5919L25.2987 32.6629H3.26899L1.97576 29.0617L0 23.5385V23.5295L1.28424 19.9283L2.57747 16.336L5.84646 7.20256L7.1307 3.60129H31.8277L30.5435 7.20256H18.9134Z" fill="black"/><path d="M124.895 16.336L123.602 12.7347H99.8119L98.5186 16.336L97.2254 19.9372L95.9412 23.5385L95.995 23.6912L97.9259 29.0706L99.2101 32.6719H122.892L124.177 29.0706L126.808 21.7154L124.886 16.336H124.895ZM114.388 19.9283L111.119 29.0617H107.032L109.017 23.5295L110.301 19.9283L111.595 16.327H115.681L114.388 19.9283Z" fill="black"/><path d="M43.422 29.0617H39.6501L41.6348 23.5385L42.9191 19.9372L44.2123 16.336H61.0602L62.3534 12.7347H45.4966L47.4813 7.20256L48.7655 3.60129H35.6986L34.4053 7.20256L31.1453 16.336L29.8521 19.9372L28.5679 23.5295V23.5385L31.8369 32.6629H35.6177H38.3659H42.1378H44.1315H55.2047L58.4737 23.5385H45.4067L43.422 29.0617Z" fill="black"/><path d="M173.921 14.2075L169.395 19.0661L156.705 32.6719H147.643L164.859 14.2075L154.972 3.60129H164.033L169.395 9.35794L173.921 14.2075Z" fill="black"/><path d="M206 0L184.823 22.7033L197.477 36.2642H181.429L176.795 31.2979L168.757 22.7033L176.795 14.0997L189.942 0H206Z" fill="black"/></svg>`);
+
+        // ── Social Icon SVGs (circle outline style, matching the reference design) ──
+        // 用 base64 img 保持 Gmail 相容性
+        function makeSocialIconBase64(svgPath, size = 28) {
+            const svg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="${size / 2}" cy="${size / 2}" r="${size / 2 - 1}" stroke="white" stroke-width="1.5" fill="none"/><g transform="translate(${size * 0.25}, ${size * 0.25}) scale(${size * 0.5 / 24})">${svgPath}</g></svg>`;
+            return 'data:image/svg+xml;base64,' + btoa(svg);
+        }
+
+        const FB_ICON = makeSocialIconBase64(`<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="white"/>`);
+        const IG_ICON = makeSocialIconBase64(`<path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" fill="white"/>`);
+        const LI_ICON = makeSocialIconBase64(`<path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="white"/>`);
+
+
+        /**
+         * 產生 Gmail 相容的簽名檔 HTML
+         */
+        function generateSignatureHTML() {
+            const name = document.getElementById('inputName').value;
+            const title = document.getElementById('inputTitle').value;
+            const mobile = document.getElementById('inputMobile').value;
+            const email = document.getElementById('inputEmail').value;
+            const website = 'ethorx.com'; // 公司固定值
+            const facebook = document.getElementById('inputFacebook').value;
+            const instagram = document.getElementById('inputInstagram').value;
+            const linkedin = document.getElementById('inputLinkedin').value;
+
+            // 組合社群 icon（只顯示有填的）
+            let socialHTML = '';
+            if (facebook || instagram || linkedin) {
+                let icons = '';
+                if (facebook) {
+                    icons += `<td style="padding-left: 8px;"><a href="${facebook}" target="_blank" style="text-decoration: none;"><img src="${FB_ICON}" width="28" height="28" alt="Facebook" style="display: block; border: 0;" /></a></td>`;
+                }
+                if (instagram) {
+                    icons += `<td style="padding-left: 8px;"><a href="${instagram}" target="_blank" style="text-decoration: none;"><img src="${IG_ICON}" width="28" height="28" alt="Instagram" style="display: block; border: 0;" /></a></td>`;
+                }
+                if (linkedin) {
+                    icons += `<td style="padding-left: 8px;"><a href="${linkedin}" target="_blank" style="text-decoration: none;"><img src="${LI_ICON}" width="28" height="28" alt="LinkedIn" style="display: block; border: 0;" /></a></td>`;
+                }
+                socialHTML = `
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse: collapse;">
+                    <tr>${icons}</tr>
+                </table>`;
+            }
+
+            // 動態組合聯絡資訊（只顯示有填的欄位）
+            let contactRows = '';
+            if (mobile) {
+                contactRows += `
+                            <tr>
+                                <td style="padding: 2px 0; vertical-align: middle;">
+                                    <span style="font-size: 14px; margin-right: 8px;">📱</span>
+                                    <span>${mobile}</span>
+                                </td>
+                            </tr>`;
+            }
+            if (website) {
+                contactRows += `
+                            <tr>
+                                <td style="padding: 2px 0; vertical-align: middle;">
+                                    <span style="font-size: 14px; margin-right: 8px;">🌐</span>
+                                    <a href="https://${website}" target="_blank" style="color: #333333; text-decoration: none;">${website}</a>
+                                </td>
+                            </tr>`;
+            }
+            if (email) {
+                contactRows += `
+                            <tr>
+                                <td style="padding: 2px 0; vertical-align: middle;">
+                                    <span style="font-size: 14px; margin-right: 8px;">✉️</span>
+                                    <a href="mailto:${email}" style="color: #333333; text-decoration: none;">${email}</a>
+                                </td>
+                            </tr>`;
+            }
+
+            // 職位 + 公司行（有填職位才顯示）
+            const titleLine = title
+                ? `<p style="margin: 0 0 12px 0; font-size: 13px; color: #555555; line-height: 1.3;">${title}, 伊索斯科技有限公司</p>`
+                : `<p style="margin: 0 0 12px 0; font-size: 13px; color: #555555; line-height: 1.3;">伊索斯科技有限公司</p>`;
+
+            // 聯絡資訊區塊
+            const contactBlock = contactRows
+                ? `<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse: collapse; font-size: 13px; color: #333333;">${contactRows}</table>`
+                : '';
+
+            return `<!--[if mso]><table border="0" cellpadding="0" cellspacing="0" width="560"><tr><td><![endif]-->
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse: collapse; font-family: Arial, Helvetica, sans-serif; line-height: 1.4; max-width: 560px; width: 100%;">
+    <!-- 主體區塊 -->
+    <tr>
+        <td style="padding: 0 0 16px 0;">
+            <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse: collapse; width: 100%;">
+                <tr>
+                    <!-- Logo 欄 -->
+                    <td style="vertical-align: middle; width: 160px; padding-right: 24px;">
+                        <img src="${LOGO_BLACK_BASE64}" width="140" height="25" alt="EthorX" style="display: block; border: 0;" />
+                    </td>
+                    <!-- 分隔線 + 資訊欄 -->
+                    <td style="vertical-align: top; border-left: 2px solid #e0e0e0; padding-left: 24px;">
+                        ${name ? `<p style="margin: 0 0 2px 0; font-size: 18px; font-weight: bold; color: #000000; line-height: 1.3;">${name}</p>` : ''}
+                        ${titleLine}
+                        ${contactBlock}
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <!-- 底部黑色 Banner -->
+    <tr>
+        <td style="background-color: #000000; padding: 12px 20px; border-radius: 0;">
+            <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse: collapse; width: 100%;">
+                <tr>
+                    <td style="vertical-align: middle;">
+                        &nbsp;
+                    </td>
+                    <td style="vertical-align: middle; text-align: right;">
+                        ${socialHTML}
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<!--[if mso]></td></tr></table><![endif]-->`;
+        }
+
+        /**
+         * 即時更新預覽
+         */
+        function updatePreview() {
+            document.getElementById('signaturePreview').innerHTML = generateSignatureHTML();
+        }
+
+        /**
+         * 複製 HTML 原始碼到剪貼簿
+         */
+        async function copySignature() {
+            const html = generateSignatureHTML();
+            try {
+                await navigator.clipboard.writeText(html);
+                showToast('✅ HTML 原始碼已複製！');
+                const btn = document.getElementById('btnCopy');
+                btn.textContent = '✅ 已複製！';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = '📋 複製簽名檔 HTML';
+                    btn.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                // Fallback
+                const textarea = document.createElement('textarea');
+                textarea.value = html;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('✅ HTML 原始碼已複製！');
+            }
+        }
+
+        /**
+         * 複製為富文字格式（可直接貼入 Gmail 簽名設定）
+         */
+        async function copyRichText() {
+            const html = generateSignatureHTML();
+            try {
+                const blob = new Blob([html], { type: 'text/html' });
+                const item = new ClipboardItem({ 'text/html': blob });
+                await navigator.clipboard.write([item]);
+                showToast('✅ 富文字已複製！直接貼到 Gmail 簽名設定即可');
+            } catch (err) {
+                // Fallback: 選取預覽區域
+                const range = document.createRange();
+                range.selectNodeContents(document.getElementById('signaturePreview'));
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+                document.execCommand('copy');
+                selection.removeAllRanges();
+                showToast('✅ 已複製！直接貼到 Gmail 簽名設定');
+            }
+        }
+
+        /**
+         * 顯示 Toast 通知
+         */
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // ── 初始化：載入預設預覽 ──
+        updatePreview();
+    </script>
+
+</body>
+
+</html>
